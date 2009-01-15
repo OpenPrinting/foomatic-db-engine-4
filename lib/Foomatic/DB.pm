@@ -4113,7 +4113,7 @@ sub getppd (  $ $ $ ) {
 		    push(@optionblob,
 			sprintf("*ParamCustom%s%s %s/%s: 1 %s 0 %d\n\n",
 			    $jcl, $name, $name, $arg->{'comment'},
-			    $arg->{'maxlength'}));
+			    $type, $arg->{'maxlength'}));
 		}
 
 		if ($name eq "PageSize") {
@@ -4802,10 +4802,10 @@ EOFPGSZ
 
     # Add info about driver properties
     my $drvproperties = "";
-    $drvproperties .= "*driverName $dat->{'driver'}/$dat->{'driver'}" .
+    $drvproperties .= "*driverName $dat->{'driver'}: \"" .
 	($dat->{'shortdescription'} ? 
-	 " - $dat->{'shortdescription'}" : "") . 
-	 ": \"\"\n" if defined($dat->{'driver'});
+	 $dat->{'shortdescription'} : "") . 
+	 "\"\n" if defined($dat->{'driver'});
     $drvproperties .= "*driverType $dat->{'type'}" .
 	($dat->{'type'} eq "G" ? "/Ghostscript built-in" :
 	 ($dat->{'type'} eq "U" ? "/Ghostscript Uniprint" :
