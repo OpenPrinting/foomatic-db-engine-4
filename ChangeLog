@@ -1,3 +1,7 @@
+2009-04-19  Till Kamppeter <till.kamppeter@gmail.com>
+
+        * Tagged branch for release 4.0.1.
+
 2009-03-17  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* foomatic-compiledb.in: Fixed copy-and-paste bug in foomatic-compiledb
