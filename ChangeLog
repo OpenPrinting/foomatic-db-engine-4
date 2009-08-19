@@ -1,5 +1,9 @@
 2009-08-19  Till Kamppeter <till.kamppeter@gmail.com>
 
+	* Tagged branch for release 4.0.3.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.3.
+
 	* foomatic-ppd-to-xml.in: Added "-n" option to the foomatic-ppd-to-xml
 	  utility. This makes only new printer XML files being generated and
 	  no modified versions of existing files.
