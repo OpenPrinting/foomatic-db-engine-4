@@ -1197,7 +1197,7 @@ sub apply_driver_and_pdl_info {
     if ($pdls) {
 	for my $l (split(',', $pdls)) {
 	    my ($lang, $level) = ('', '');
-	    if ($l =~ /\b(PostScript|PS|BR-?Script)(\d?)\b/i) {
+	    if ($l =~ /\b(PostScript|PS|BR-?Script|KPDL-?)\s*(\d?)\b/i) {
 		$lang = "postscript";
 		$level = $2;
 	    } elsif ($l =~ /\b(PDF)\b/i) {
@@ -1256,6 +1256,7 @@ sub apply_driver_and_pdl_info {
 		} else {
 		    $drivers{'pxlmono'} = 1;
 		    $drivers{'lj5gray'} = 1;
+		    $drivers{'lj5mono'} = 1;
 		}
 	    } elsif ($level eq "5e") {
 		$drivers{'ljet4d'} = 1;
@@ -4969,7 +4970,8 @@ EOFPGSZ
     }
 
     my $color;
-    if ($dat->{'color'}) {
+    if ($dat->{'color'} &&
+	(!defined($dat->{'drvcolor'}) || ($dat->{'drvcolor'} != 0))) {
 	$color = "*ColorDevice:	True\n*DefaultColorSpace: RGB";
     } else {
 	$color = "*ColorDevice:	False\n*DefaultColorSpace: Gray";
