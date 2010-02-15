@@ -1,3 +1,9 @@
+2009-09-18  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* foomatic-ppdfile.in: When generating a PPD file, do only generate
+	  the overview if really needed. This makes generating PPDs much
+	  faster.
+
 2009-09-17  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* lib/Foomatic/DB.pm: Removed line
