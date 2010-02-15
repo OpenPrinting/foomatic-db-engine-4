@@ -1167,8 +1167,7 @@ sub apply_driver_and_pdl_info {
 			die ("Given PPD file not found, neither as $ppddlpath nor as $ppdfile!\n");
 		    }
 		} else {
-		    $ppdfile =~ m:$basedir/(.*)$:;
-		    $ppddlpath = $1;
+		    $ppddlpath = $1 if $ppdfile =~ m:$basedir/(.*)$:;
 		}
 	    } else {
 		if (! -r $ppdfile) {
@@ -1176,9 +1175,17 @@ sub apply_driver_and_pdl_info {
 		}
 		$ppddlpath = $ppdfile;
 	    }
+	    if ($ppddlpath eq "") {
+		my $mk = $dat->{'id'};
+		$mk =~ s/^([^\-]+)\-.*$/$1/;
+		my $ppd = $ppdfile;
+		$ppd =~ s:^.*/([^/]+):$1:;
+		$ppddlpath = "PPD/$mk/$ppd";    
+	    }
+	    $ppddlpath =~ s/\.gz$//i;
 	}
     }
-			      
+
     if ($dat->{'driver'} =~ /Postscript/i) {
 	$pdls = join(',', ($pdls, "POSTSCRIPT$dat->{'ppdpslevel'}"));
     } elsif ($dat->{'driver'} =~ /(pxl|pcl[\s\-]?xl)/i) {
@@ -2133,6 +2140,14 @@ sub ppdfromvartoperl {
 	if !$dat->{'id'};
 
     # Find out printer's page description languages and suitable drivers
+    if (!defined($parameters->{'drivers'})) {
+	$parameters->{'drivers'} = [$dat->{'driver'}];
+    }
+    if (!defined($parameters->{'pdls'})) {
+	$parameters->{'pdls'} = [split(',', $dat->{'general_cmd'})];
+    } else {
+	push(@{$parameters->{'pdls'}}, split(',', $dat->{'general_cmd'}));
+    }
     apply_driver_and_pdl_info($dat, $parameters);
 
     # Find the maximum resolution

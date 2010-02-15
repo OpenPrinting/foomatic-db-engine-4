@@ -1,3 +1,31 @@
+2009-12-26  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* README: Mirrored changes from the README file of foomatic-db.
+
+2009-12-22  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm, foomatic-ppd-to-xml.in: If the PPD file
+	  supplied to foomatic-ppd-to-xml is compressed and should be
+	  linked in the generated printer XML file, assume that it gets
+	  added to the OpenPrinting database uncompressed. Therefore
+	  remove the ".gz" extension from the link.
+
+	* lib/Foomatic/DB.pm: If a PPD file supplied to the ppdtoperl()
+	  function contains information about the page description
+	  languages in the device ID or a Foomatic driver ID, use this
+	  information for the generated printer data structure.
+
+2009-12-21  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm, foomatic-ppd-to-xml.in: Allow supplying a
+	  PPD file to foomatic-ppd-to-xml which is not installed into the
+	  Foomatic database tree (then the standard location
+	  db/source/PPD/<make>/<PPD filename> is assumed for a PPD file
+	  link in the printer XML file). Added the "-x" option to
+	  foomatic-ppd-to-xml whichj lets printer XMLs be generated from
+	  the PPD without checking whether the appropriate printers
+	  already exist.
+
 2008-10-27  Dafydd Crosby <dcrosby@userful.com>
 
 	* ppdtoxml: Version 0.21.
