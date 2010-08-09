@@ -48,7 +48,18 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
 dnl Checks for library functions.
-AC_CHECK_FUNCS(strdup strspn strstr xmlParseFile xmlCreatePushParserCtxt xmlParseChunk xmlFreeParserCtxt xmlFreeDoc xmlDocGetRootElement xmlNodeListGetString)
+AC_CHECK_FUNCS(strdup strspn strstr)
+
+#
+# augment CFLAGS and LIBS temporarily while searching for the xml* functions
+#
+save_CFLAGS="$CFLAGS"
+save_LIBS="$LIBS"
+CFLAGS="$XML_CFLAGS $CFLAGS"
+LIBS="$XML_LIBS $LIBS"
+AC_CHECK_FUNCS(xmlParseFile xmlCreatePushParserCtxt xmlParseChunk xmlFreeParserCtxt xmlFreeDoc xmlDocGetRootElement xmlNodeListGetString)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
 
 dnl Checks for programs/directories which are used by Foomtic
 
@@ -183,22 +194,14 @@ if test x$prefix = xNONE; then
 else
   PREFIX=$prefix
 fi
-echo -n Checking whether Perl will find libraries installed under $PREFIX...
-if ( $PERL -V | egrep "^ *$PREFIX/lib(/perl[[0-9]]?|)(/site_perl|)/[[0-9]]" > /dev/null); then
-  PERLPREFIX=$PREFIX
-  echo " yes"
+echo -n Checking where Perl will find its libraries...
+eval `${PERL} -V:installprefix`
+PERLPREFIX=`echo $installprefix`
+if test -n "$PERLPREFIX"; then
+  echo " $PERLPREFIX"
 else
-  echo " no"
-  echo -n Checking whether Perl will find libraries installed under /usr/local...
-  if ( $PERL -V | egrep "^ */usr/local/lib(/perl[[0-9]]?|)(/site_perl|)/[[0-9]]" > /dev/null); then
-    PERLPREFIX=/usr/local
-    echo " yes"
-    echo Installing the Perl libraries with prefix /usr/local.
-  else
-    PERLPREFIX=/usr
-    echo " no"
-    echo Installing the Perl libraries with prefix /usr.
-  fi
+  PERLPREFIX=/usr
+  echo " not found, installing the Perl libraries with prefix /usr."
 fi
 AC_SUBST(PERLPREFIX)
 

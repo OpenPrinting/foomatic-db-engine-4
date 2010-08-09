@@ -1,3 +1,34 @@
+2010-07-10  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* foomatic-perl-data.c: Added support for the new "fingerprint"
+	  parameter of the <package> tag.
+
+2010-07-05  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* README: Documented new "fingerprint" parameter for the <package>
+	  tag. It provides a link to key fingerprint on the web site of the
+	  issuer of the driver.
+
+2010-06-23  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* foomatic-compiledb.1.in, foomatic-kitload.8.in: Fixed some
+	  hyphen-used-as-minus lintian warnings. Thanks to Didier Raboud
+	  (didier at raboud dot com) for the patch.
+
+2010-06-11  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Makefile.in: Do "make install" in lib/ directory with explicit
+	  use of DESTDIR. Otherwise it can come to a duplicate insertion
+	  of DESTDIR. Thanks to Tim Mooney for the patch (Bug #445).
+
+	* configure.ac: Simplified and generalized the check for the Perl
+	  library directory prefix in the configure script. Thanks to Tim
+	  Mooney (Bug #418).
+
+	* configure.ac: Check for functions of libxml with CFLAGS and LIBS
+	  containing the detected references to libxml. Thanks to Tim Mooney
+	  for the patch (Bug #444).
+
 2010-03-16  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* lib/Foomatic/DB.pm: apply_driver_and_pdl_info(): Do not add
