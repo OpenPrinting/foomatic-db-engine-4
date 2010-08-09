@@ -1,3 +1,9 @@
+2010-08-09  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Tagged branch for release 4.0.5.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.5.
+
 2010-07-10  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* foomatic-perl-data.c: Added support for the new "fingerprint"
