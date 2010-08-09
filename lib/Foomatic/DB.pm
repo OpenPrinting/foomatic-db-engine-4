@@ -30,7 +30,10 @@ sub new {
 my %driver_types = ('F' => 'Filter',
 		    'P' => 'Postscript',
 		    'U' => 'Ghostscript Uniprint',
-		    'G' => 'Ghostscript');
+		    'G' => 'Ghostscript built-in',
+                    'I' => 'IJS',
+                    'C' => 'CUPS Raster',
+                    'V' => 'OpenPrinting Vector');
 
 # Translate old numerical PostGreSQL printer IDs to the new clear text ones.
 sub translate_printer_id {
