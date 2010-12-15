@@ -1,3 +1,63 @@
+2010-12-15  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* README: Documented special entities for inserting job parameters,
+	  like "&job;", "&user;", "&host;", "&title;", "&options;", ...
+
+2010-12-13  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* foomatic-ppd-to-xml.in: Allow generating a printer XML files also
+	  from more than one PPD file for the same printer with only one call
+	  of the foomatic-ppd-to-xml script. Feature request from George Liu
+	  from Ricoh (bug #565).
+
+	* lib/Foomatic/DB.pm: Allow loading arbitrary printer and driver
+	  XML files into the Perl data structure, not only XML files which
+	  are in the current XML database.
+	  When generating Perl data from a PPD do not add a new paragraph to
+	  the printer comments if the added comment is empty.
+
+2010-12-09  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Makefile.in: Rearranged gcc command line so that linking works
+	  with gcc 4.5.x (Ubuntu bug #687973).
+
+2010-12-08  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm: Sort the driver lists in printer XML files
+	  alphabetically (case-insensitive) when generating XML files from
+	  a Perl data structure, so that the files are identical to the
+	  MySQL -> XML exporter on the OpenPrinting web servers. This
+	  prevents automatic BZR commits into foomatic-db or
+	  foomatic-db-nonfree which contain nothing more than driver list
+	  reordering.
+
+	* README, lib/Foomatic/DB.pm, ppdtoxml: Use always a single space
+	  before the closing "/>" of body-less tags. This way the XML style
+	  of files committed to the BZR repositories of foomatic-db and
+	  foomatic-db-nonfree is the same as the XML style used by the
+	  export of XML from the MySQL database on the OpenPrinting web
+	  server and so the daily synchronization does not commit pure
+	  XML style changes into the BZR repositories.
+
+2010-11-26  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm, foomatic-ppd-to-xml.in: Added new features to
+	  foomatic-ppd-to-xml: Now custom comments can be added (-c), the
+	  deafult comments can get suppressed (-C), and XML files with only
+	  te drivers requested with -r and -d can be generated (-D).
+
+2010-08-30  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm: Do not die if the C helper programs
+	  foomatic-combo-xml and foomatic-perl-data fail. Simply return
+	  undef so that the caller can handle the error.
+
+2010-08-26  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* foomatic-ppdfile.in: Fixed bug that made the PPD URI
+	  foomatic:Apollo-P-2100-hpijs-pcl3.ppd interpreted as printer
+	  Apollo-P-2100-hpijs and driver pcl3.
+
 2010-08-09  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* Tagged branch for release 4.0.5.

@@ -109,8 +109,10 @@ sub get_overview {
     $otype .= ' -n' if ($cupsppds == 1);
     # Generate overview Perl data structure from database
     my $VAR1;
-    eval `$bindir/foomatic-combo-xml $otype -l '$libdir' | $bindir/foomatic-perl-data -O -l $this->{'language'}` ||
-	die ("Could not run \"foomatic-combo-xml\"/\"foomatic-perl-data\"!");
+    eval `$bindir/foomatic-combo-xml $otype -l '$libdir' | $bindir/foomatic-perl-data -O -l $this->{'language'}` || do {
+	warn ("Could not run \"foomatic-combo-xml\"/\"foomatic-perl-data\"!\n");
+	return undef;
+    };
     $this->{'overview'} = $VAR1;
 
     # Write on-disk cache file if we have one
@@ -127,8 +129,10 @@ sub get_overview {
 sub get_overview_xml {
     my ($this, $compile) = @_;
 
-    open( FCX, "$bindir/foomatic-combo-xml -O -l '$libdir'|")
-	or die "Can't execute $bindir/foomatic-combo-xml -O -l '$libdir'";
+    open( FCX, "$bindir/foomatic-combo-xml -O -l '$libdir'|") or do {
+	warn "Can't execute $bindir/foomatic-combo-xml -O -l '$libdir'\n";
+	return undef;
+    };
     $_ = join('', <FCX>);
     close FCX;
     return $_;
@@ -151,8 +155,10 @@ sub get_combo_data_xml {
 	}
     }
 
-    open( FCX, "$bindir/foomatic-combo-xml -d '$drv' -p '$poid'$options -l '$libdir'|")
-	or die "Can't execute $bindir/foomatic-combo-xml -d '$drv' -p '$poid'$options -l '$libdir'";
+    open( FCX, "$bindir/foomatic-combo-xml -d '$drv' -p '$poid'$options -l '$libdir'|") or do {
+	warn "Can't execute $bindir/foomatic-combo-xml -d '$drv' -p '$poid'$options -l '$libdir'\n";
+	return undef;
+    };
     $_ = join('', <FCX>);
     close FCX;
     return $_;
@@ -162,9 +168,16 @@ sub get_printer {
     my ($this, $poid) = @_;
     # Generate printer Perl data structure from database
     my $VAR1;
-    if (-r "$libdir/db/source/printer/$poid.xml") {
-	eval (`$bindir/foomatic-perl-data -P -l $this->{'language'} '$libdir/db/source/printer/$poid.xml'`) ||
-	    die ("Could not run \"foomatic-perl-data\"!");
+    if (-r "$poid") {
+	eval (`$bindir/foomatic-perl-data -P -l $this->{'language'} '$poid'`) || do {
+	    warn ("Could not run \"foomatic-perl-data\"!\n");
+	    return undef;
+	};
+    } elsif (-r "$libdir/db/source/printer/$poid.xml") {
+	eval (`$bindir/foomatic-perl-data -P -l $this->{'language'} '$libdir/db/source/printer/$poid.xml'`) || do {
+	    warn ("Could not run \"foomatic-perl-data\"!\n");
+	    return undef;
+	};
     } else {
 	my ($make, $model);
 	if ($poid =~ /^([^\-]+)\-(.*)$/) {
@@ -196,16 +209,27 @@ sub printer_exists {
 
 sub get_printer_xml {
     my ($this, $poid) = @_;
-    return $this->_get_object_xml("source/printer/$poid", 1);
+    if (-r "$poid") {
+	return $this->_get_object_xml("$poid", 1);
+    } else {
+	return $this->_get_object_xml("source/printer/$poid", 1);
+    }
 }
 
 sub get_driver {
     my ($this, $drv) = @_;
     # Generate driver Perl data structure from database
     my $VAR1;
-    if (-r "$libdir/db/source/driver/$drv.xml") {
-	eval (`$bindir/foomatic-perl-data -D -l $this->{'language'} '$libdir/db/source/driver/$drv.xml'`) ||
-	    die ("Could not run \"foomatic-perl-data\"!");
+    if (-r "$drv") {
+	eval (`$bindir/foomatic-perl-data -D -l $this->{'language'} '$drv'`) || do {
+	    warn ("Could not run \"foomatic-perl-data\"!\n");
+	    return undef;
+	}
+    } elsif (-r "$libdir/db/source/driver/$drv.xml") {
+	eval (`$bindir/foomatic-perl-data -D -l $this->{'language'} '$libdir/db/source/driver/$drv.xml'`) || do {
+	    warn ("Could not run \"foomatic-perl-data\"!\n");
+	    return undef;
+	}
     } else {
 	return undef;
     }
@@ -214,7 +238,11 @@ sub get_driver {
 
 sub get_driver_xml {
     my ($this, $drv) = @_;
-    return $this->_get_object_xml("source/driver/$drv", 1);
+    if (-r "$drv") {
+	return $this->_get_object_xml("$drv", 1);
+    } else {
+	return $this->_get_object_xml("source/driver/$drv", 1);
+    }
 }
 
 # Utility query function sorts of things:
@@ -1078,9 +1106,11 @@ sub getdat ($ $ $) {
     # Generate Perl data structure from database
     my %dat;			# Our purpose in life...
     my $VAR1;
-    eval (`$bindir/foomatic-combo-xml -d '$drv' -p '$poid' -l '$libdir' | $bindir/foomatic-perl-data -C -l $this->{'language'}`) ||
-	die ("Could not run \"foomatic-combo-xml\"/" .
-	     "\"foomatic-perl-data\"!");
+    eval (`$bindir/foomatic-combo-xml -d '$drv' -p '$poid' -l '$libdir' | $bindir/foomatic-perl-data -C -l $this->{'language'}`) || do {
+	warn ("Could not run \"foomatic-combo-xml\"/" .
+	      "\"foomatic-perl-data\"!\n");
+	return undef;
+    };
     %dat = %{$VAR1};
 
     # Funky one-at-a-time cache thing
@@ -1139,13 +1169,17 @@ sub apply_driver_and_pdl_info {
     my %drivers;
     my $pdls;
     my $ppddlpath;
-    my $ppddrv = $dat->{'driver'};
+    my $ppddrv = (defined($parameters->{'ppddriver'}) ?
+		  $parameters->{'ppddriver'} :
+		  $dat->{'driver'});
     if ($parameters) {
 	if (defined($parameters->{'drivers'})) {
 	    foreach my $d (@{$parameters->{'drivers'}}) {
 		$drivers{$d} = 1;
 	    }
-	    $ppddrv = $parameters->{'drivers'}[0];
+	    if (!defined($parameters->{'ppddriver'})) {
+		$ppddrv = $parameters->{'drivers'}[0];
+	    }
 	    $dat->{'driver'} = $parameters->{'drivers'}[0] if
 		$parameters->{'drivers'}[0] =~ /^$dat->{'driver'}/;
 	}
@@ -1250,50 +1284,52 @@ sub apply_driver_and_pdl_info {
 	}
     }
     $drivers{$dat->{'driver'}} = 1;
-    for my $ll (@{$dat->{'languages'}}) {
-	my $lang = $ll->{'name'};
-	my $level = $ll->{'level'};
-	if ($lang =~ /^postscript$/i) {
-	    if ($level eq "1") {
-		$drivers{'Postscript1'} = 1;
-	    } else {
-		$drivers{'Postscript'} = 1;
+    if (!$parameters->{'addonlyrequesteddrivers'}) {
+	for my $ll (@{$dat->{'languages'}}) {
+	    my $lang = $ll->{'name'};
+	    my $level = $ll->{'level'};
+	    if ($lang =~ /^postscript$/i) {
+		if ($level eq "1") {
+		    $drivers{'Postscript1'} = 1;
+		} else {
+		    $drivers{'Postscript'} = 1;
+		}
+	    } elsif ($lang =~ /^pcl$/i) {
+		if ($level eq "6") {
+		    if ($dat->{'color'}) {
+			$drivers{'pxlcolor'} = 1;
+		    } else {
+			$drivers{'pxlmono'} = 1;
+			$drivers{'lj5gray'} = 1;
+		    }
+		} elsif ($level eq "5e") {
+		    $drivers{'ljet4d'} = 1;
+		    $drivers{'ljet4'} = 1;
+		    $drivers{'lj4dith'} = 1;
+		    if ($dat->{'make'} =~ /^(HP|Hewlett[\s-]+Packard)$/i) {
+			$drivers{'hplip'} = 1;
+		    } else {
+			$drivers{'hpijs-pcl5e'} = 1;
+		    }
+		    $drivers{'gutenprint'} = 1;
+		} elsif ($level eq "5c") {
+		    $drivers{'cljet5'} = 1;
+		    if ($dat->{'make'} =~ /^(HP|Hewlett[\s-]+Packard)$/i) {
+			$drivers{'hplip'} = 1;
+		    } else {
+			$drivers{'hpijs-pcl5c'} = 1;
+		    }
+		} elsif ($level eq "5") {
+		    $drivers{'ljet3d'} = 1;
+		    $drivers{'ljet3'} = 1;
+		} elsif ($level eq "4") {
+		    $drivers{'laserjet'} = 1;
+		    $drivers{'ljetplus'} = 1;
+		    $drivers{'ljet2p'} = 1;
+		}
+		# PCL printers print also plain text
+		$dat->{'ascii'} = 'us-ascii';
 	    }
-	} elsif ($lang =~ /^pcl$/i) {
-	    if ($level eq "6") {
-		if ($dat->{'color'}) {
-		    $drivers{'pxlcolor'} = 1;
-		} else {
-		    $drivers{'pxlmono'} = 1;
-		    $drivers{'lj5gray'} = 1;
-		}
-	    } elsif ($level eq "5e") {
-		$drivers{'ljet4d'} = 1;
-		$drivers{'ljet4'} = 1;
-		$drivers{'lj4dith'} = 1;
-		if ($dat->{'make'} =~ /^(HP|Hewlett[\s-]+Packard)$/i) {
-		    $drivers{'hplip'} = 1;
-		} else {
-		    $drivers{'hpijs-pcl5e'} = 1;
-		}
-		$drivers{'gutenprint'} = 1;
-	    } elsif ($level eq "5c") {
-		$drivers{'cljet5'} = 1;
-		if ($dat->{'make'} =~ /^(HP|Hewlett[\s-]+Packard)$/i) {
-		    $drivers{'hplip'} = 1;
-		} else {
-		    $drivers{'hpijs-pcl5c'} = 1;
-		}
-	    } elsif ($level eq "5") {
-		$drivers{'ljet3d'} = 1;
-		$drivers{'ljet3'} = 1;
-	    } elsif ($level eq "4") {
-		$drivers{'laserjet'} = 1;
-		$drivers{'ljetplus'} = 1;
-		$drivers{'ljet2p'} = 1;
-	    }
-	    # PCL printers print also plain text
-	    $dat->{'ascii'} = 'us-ascii';
 	}
     }
     for my $drv (keys %drivers) {
@@ -2192,7 +2228,7 @@ sub ppdfromvartoperl {
 	}
     }
 
-    if ($dat->{'maxpaperwidth'}) {
+    if ($dat->{'maxpaperwidth'} && !$parameters->{'nodefaultcomment'}) {
 	my $wi = sprintf("%.1f", $dat->{'maxpaperwidth'} / 72);
 	my $wc = sprintf("%.1f", $dat->{'maxpaperwidth'} / 72 * 2.54);
 	my $wcomm = ($dat->{'maxpaperwidth'} < 280 ?
@@ -2212,7 +2248,13 @@ sub ppdfromvartoperl {
     $dat->{'comment'} .=
 	"      Printing engine speed: " . $dat->{'throughput'} .
 	" pages/min<p>\n\n" if
-	defined($dat->{'throughput'}) && ($dat->{'throughput'} > 1);
+	defined($dat->{'throughput'}) && ($dat->{'throughput'} > 1 &&
+	!$parameters->{'nodefaultcomment'});
+    if (defined($parameters->{'comment'}) &&
+	($parameters->{'comment'} =~ /\S/)) {
+	$dat->{'comment'} .= "      <p>\n\n" if $dat->{'comment'};
+	$dat->{'comment'} .= "      " . $parameters->{'comment'};
+    }
 
     # Set the defaults for the numerical options, taking into account
     # the "*FoomaticRIPDefault<option>: <value>" if they apply
@@ -2257,8 +2299,8 @@ sub perltoxml {
 	    "  <make>" . $dat->{'make'} . "</make>\n" .
 	    "  <model>" . $dat->{'model'} . "</model>\n" .
 	    "  <mechanism>\n" .
-	    ($dat->{'type'} ? "    <" . $dat->{'type'} . "/>\n" : ()) .
-	    ($dat->{'color'} ? "    <color/>\n" : ()) .
+	    ($dat->{'type'} ? "    <" . $dat->{'type'} . " />\n" : ()) .
+	    ($dat->{'color'} ? "    <color />\n" : ()) .
 	    ($dat->{'maxxres'} || $dat->{'maxyres'} ?
 	     "    <resolution>\n" .
 	     "      <dpi>\n" .
@@ -2277,9 +2319,9 @@ sub perltoxml {
 		for  my $lang (@{$dat->{'languages'}}) {
 		    $xml .= "    <" . $lang->{'name'};
 		    if ($lang->{'level'}) {
-			$xml .= " level=\"" . $lang->{'level'} . "\" ";
+			$xml .= " level=\"" . $lang->{'level'} . "\"";
 		    }
-		    $xml .= "/>\n";
+		    $xml .= " />\n";
 		}
 	    }
 	    if (defined($dat->{'pjl'})) {
@@ -2318,7 +2360,8 @@ sub perltoxml {
 	    "</driver>\n" if defined($dat->{'driver'});
 	if (defined($dat->{'drivers'})) {
 	    $xml .= "  <drivers>\n";
-	    for  my $drv (@{$dat->{'drivers'}}) {
+	    for  my $drv (sort {lc($a->{'id'}) cmp lc($b->{'id'})}
+			  @{$dat->{'drivers'}}) {
 		$xml .= "    <driver>\n";
 		$xml .= "      <id>" . $drv->{'id'} . "</id>\n"
 		    if defined($drv->{'id'});
@@ -6069,13 +6112,18 @@ sub normalizename {
 
 # Load an XML object from the library
 # You specify the relative file path (to .../db/), less the .xml on the end.
+# To load an arbitrary XML, give a full path and file name ending with ".xml".
 sub _get_object_xml {
     my ($this, $file, $quiet) = @_;
 
-    open XML, "$libdir/db/$file.xml"
-	or do { warn "Cannot open file $libdir/db/$file.xml\n"
-		    if !$quiet;
-		return undef; };
+    my $f = $file;
+    if (! -r "$f") {
+	$f = "$libdir/db/$file.xml"
+    }
+    open XML, $f
+        or do { warn "Cannot open file $f\n"
+                    if !$quiet;
+                return undef; };
     my $xml = join('', (<XML>));
     close XML;
 
