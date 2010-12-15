@@ -1,5 +1,9 @@
 2010-12-15  Till Kamppeter <till.kamppeter@gmail.com>
 
+	* Tagged branch for release 4.0.6.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.6.
+
 	* README: Documented special entities for inserting job parameters,
 	  like "&job;", "&user;", "&host;", "&title;", "&options;", ...
 
