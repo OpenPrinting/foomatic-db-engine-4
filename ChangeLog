@@ -1,3 +1,59 @@
+2011-01-04  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm: Improved code of the _get_xml_filelist()
+	  function: This avoids repeated construction of the "names-$dir"
+	  string and a crash of Perl if the directory does not contain any
+	  XML file (bug #613). Thanks to Christopher Yeleighton (giecrilj at
+	  stegny dot 2a dot pl) for the report.
+
+	* lib/Foomatic/DB.pm: Fixed wrong quotes in error message which
+	  prevented a variable from being substituted by its value (bug
+	  #612). Thanks to Christopher Yeleighton (giecrilj at stegny dot 2a
+	  dot pl) for the report.
+
+	* README: Fixed typos (bug #608). Thanks to Christopher Yeleighton
+	  (giecrilj at stegny dot 2a dot pl) for the report.
+
+	* Makefile.in: Silenced warning about datarootdir when running
+	  "./configure".
+
+	* configure.ac: Replaced deprecated AC_OUTPUT with argumenmts by
+	  the correct usage (bug #611). Thanks to Christopher Yeleighton
+	  (giecrilj at stegny dot 2a dot pl) for the hint.
+
+	* configure.ac: Converted many "dnl" comments into "#" comments so
+	  that they make it into the "./configure" script (bug #610). Thanks
+	  to Christopher Yeleighton (giecrilj at stegny dot 2a dot pl) for
+	  the hint.
+
+	* configure.ac: Make choosing the install directory for Perl libraries
+	  really working. The code which was commented out was not working.
+	  Now bug #605 is really fixed.
+
+2011-01-03  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* configure.ac, acinclude.m4: Avoid name space conflicts by letting
+	  the names of our own macros start with "FM_" and not with "AC_"
+	  (bug #609). Thanks to Christopher Yeleighton (giecrilj at stegny
+	  dot 2a dot pl) for the report.
+
+	* configure.ac: Allow choosing the install directory for the
+	  Perl library DB.pm (perl, site, vendor). Requires autoconf 2.52
+	  or newer (checked with "AC_PREREQ([2.52])"). Bug #605. Thanks
+	  to Christopher Yeleighton (giecrilj at stegny dot 2a dot pl) for
+	  the report.
+
+	* foomatic-perl-data.c: Eliminated compiler warnings by consistent
+	  use of "const" with xmlChar and char variables (bug #604). Thanks
+	  to Christopher Yeleighton (giecrilj at stegny dot 2a dot pl) for
+	  the patch.
+
+	* foomatic-combo-xml.c: Improved readability of the code by using
+	  symbolic constants and additional comments. Also eliminated
+	  warnings about value-less "return"s and unused variables (bug
+	  #599, #600, #601). Thanks to Christopher Yeleighton (giecrilj at
+	  stegny dot 2a dot pl) for the patch.
+
 2010-12-15  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* Tagged branch for release 4.0.6.
