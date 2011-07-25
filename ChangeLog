@@ -1,3 +1,9 @@
+2011-07-25  Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Tagged branch for release 4.0.8.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.8.
+
 2011-06-30  Till Kamppeter <till.kamppeter@gmail.com>
 
 	* lib/Foomatic/PPD.pm: Improved printer entry searh algorithm
