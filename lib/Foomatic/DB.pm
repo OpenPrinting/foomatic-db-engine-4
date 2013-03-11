@@ -9,7 +9,7 @@ use Encode;
 		getexecdocs
 		translate_printer_id
 		);
-@EXPORT = qw(ppdtoperl ppdfromvartoperl);
+@EXPORT = qw(ppdtoperl ppdfromvartoperl getpage);
 
 use Foomatic::Defaults qw(:DEFAULT $DEBUG);
 use Data::Dumper;
@@ -23,7 +23,13 @@ sub new {
     my $type = shift(@_);
     my $this = bless {@_}, $type;
     $this->{'language'} = "C";
-    return $this;
+    if (-d "$libdir/db/source/printer/" &&
+	-d "$libdir/db/source/driver/" &&
+	-d "$libdir/db/source/opt/") {
+	return $this;
+    } else {
+	die("No Foomatic database present!\n");
+    }
 }
 
 # A map from the database's internal one-letter driver types to English
@@ -5100,7 +5106,7 @@ EOFPGSZ
 
 # Utility function; returns content of a URL
 sub getpage {
-    my ($this, $url, $dontdie) = @_;
+    my ($url, $dontdie) = @_;
 
     my $failed = 0;
     my $page = undef;
