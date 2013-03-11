@@ -1,5 +1,9 @@
 2013-03-11 Till Kamppeter <till.kamppeter@gmail.com>
 
+	* Tagged branch for release 4.0.9.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.9.
+
 	* lib/Foomatic/DB.pm: Error out when initializing the DB object
 	  without any form of a Foomatic database being present, made
 	  the getpage() method a normal, object-independent function as
