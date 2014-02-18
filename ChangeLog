@@ -1,3 +1,9 @@
+2014-02-18 Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Tagged branch for release 4.0.10.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.10.
+
 2014-01-02 Till Kamppeter <till.kamppeter@gmail.com>
 
 	* foomatic-addpjloptions.in: Make foomatic-addpjloptions work with
