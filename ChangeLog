@@ -1,5 +1,9 @@
 2018-03-02 Till Kamppeter <till.kamppeter@gmail.com>
 
+	* Tagged branch for release 4.0.13.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.13.
+
 	* Makefile.in: Add support for LDFLAGS variable (bug #1422).
 
 2015-06-16 Till Kamppeter <till.kamppeter@gmail.com>

@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.52])
-AC_INIT([foomatic-db-engine], 4.0.12)
+AC_INIT([foomatic-db-engine], 4.0.13)
 AC_CONFIG_SRCDIR(foomatic-perl-data.c)
 
 # If the user didn't specify the $sysconfdir on the command line, let it
