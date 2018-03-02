@@ -7,6 +7,12 @@
 	* configure.ac: Allow user-configurable PERLPREFIX via environment
 	  variable (Bug #1294).
 
+2015-02-14 Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Tagged branch for release 4.0.12.
+
+	* README, USAGE, configure.ac: Updated for release 4.0.12.
+
 2014-11-14 Till Kamppeter <till.kamppeter@gmail.com>
 
 	* foomatic-ppdfile.in: Foomatic doesn't provide some offered PPD
