@@ -1,3 +1,7 @@
+2018-03-02 Till Kamppeter <till.kamppeter@gmail.com>
+
+	* Makefile.in: Add support for LDFLAGS variable (bug #1422).
+
 2015-06-16 Till Kamppeter <till.kamppeter@gmail.com>
 
 	* configure.ac: Allow user-configurable PERLPREFIX via environment
