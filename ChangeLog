@@ -1,3 +1,10 @@
+2020-01-31 Till Kamppeter <till.kamppeter@gmail.com>
+
+	* lib/Foomatic/DB.pm: Allow non-integer numbers in the "PageSize"
+	  option in PPD files. Thanks to Andreas Gruenbacher (agruenba at
+	  redhat dot com) for the patch (foomatic-db-engine pull request
+	  #1).
+
 2018-03-02 Till Kamppeter <till.kamppeter@gmail.com>
 
 	* Tagged branch for release 4.0.13.
